@@ -19,7 +19,7 @@ index="_internal"  log_level=*
 
 ### Search Substring
 - | eval flag =if(like(eventDescription, "%clicked%"),1,0)
--- | where like(eventDescription, "%clicked%")
+- | where like(eventDescription, "%clicked%")
 
 ### Use lists like SQL in
 - Search command supports IN operator
