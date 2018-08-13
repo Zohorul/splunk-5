@@ -16,3 +16,7 @@ index="_internal"  log_level=*
 - | stats count(usr) BY featureId
 - | geom geo_us_states featureIdField=featureId
 - Need to make the geographic match from the inputlookup table. In that, the states are called featureId, so need to rename my column that so it can join up. For the join, just specify the name of the column to join on and then do the table or create a subquery as above
+
+### Search Substring
+--| eval flag =if(like(eventDescription, "%clicked%"),1,0)
+--| where like(eventDescription, "%clicked%")
