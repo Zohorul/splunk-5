@@ -18,5 +18,12 @@ index="_internal"  log_level=*
 - Need to make the geographic match from the inputlookup table. In that, the states are called featureId, so need to rename my column that so it can join up. For the join, just specify the name of the column to join on and then do the table or create a subquery as above
 
 ### Search Substring
---| eval flag =if(like(eventDescription, "%clicked%"),1,0)
---| where like(eventDescription, "%clicked%")
+- | eval flag =if(like(eventDescription, "%clicked%"),1,0)
+-- | where like(eventDescription, "%clicked%")
+
+### Use lists like SQL in
+- Search command supports IN operator
+-- sourcetype=xyz status IN (100, 102, 103)
+
+- Eval and where commands support in function
+-- | where in(status,"222","333","444","555")
