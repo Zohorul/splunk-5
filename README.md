@@ -23,7 +23,7 @@ index="_internal"  log_level=*
 
 ### Use lists like SQL in
 - Search command supports IN operator
--- sourcetype=xyz status IN (100, 102, 103)
+  - sourcetype=xyz status IN (100, 102, 103)
 
 - Eval and where commands support in function
--- | where in(status,"222","333","444","555")
+  - | where in(status,"222","333","444","555")
