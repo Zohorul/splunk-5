@@ -30,3 +30,6 @@ index="_internal"  log_level=*
 
 - Eval and where commands support in function
   - | where in(status,"222","333","444","555")
+
+### Nice summary
+- sourcetype="alm-spans" | head 1000 | fieldSummary
