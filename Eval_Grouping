@@ -1,0 +1,11 @@
+sourcetype="alm-spans" subscriptionId=$mySubId$ requestSpan.stack=$myStack$
+| eval Load_Type = case(
+    classification="Other","webuser",
+    classification="Analytics","webuser",
+    not isnull(integrationName),"integration",
+    slug="null","WSAPI",
+    not isnull(slug),"webuser",
+    true(),"other")
+| eval Workspace=case(workspaceOid = $myWorkspaceOid$,"Selected_Workspace", true(), "All_Other")
+| rename requestSpan.spanResponseTimeMs AS spanResponseTimeMs
+| stats dc(requestSpan.traceId) AS events avg(projectOidsInScope) AS avg_proj_IS avg(spanResponseTimeMs) AS avg_ssrt      stdev(spanResponseTimeMs) AS stddev_ssrt, perc25(spanResponseTimeMs) AS p25_ssrt, perc50(spanResponseTimeMs) AS p50_ssrt,   perc75(spanResponseTimeMs) AS p75_ssrt perc95(spanResponseTimeMs) AS p95_ssrt, perc99(spanResponseTimeMs) AS p99_ssrt,  max(spanResponseTimeMs) AS max_ssrt by Workspace Load_Type
