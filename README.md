@@ -33,3 +33,7 @@ index="_internal"  log_level=*
 
 ### Nice summary
 - sourcetype="alm-spans" | head 1000 | fieldSummary
+
+
+### Null
+- isnull(xxx_field), then...
