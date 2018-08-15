@@ -47,3 +47,7 @@ index="_internal"  log_level=*
 
 ### Shorten tables
 - head 10  no parentheses
+
+### Join tables
+- | rename requestSpan.traceId AS trace 
+- | join trace type="inner" [search sourcetype="alm-spans" workspaceOid = *| rename requestSpan.traceId AS trace | dedup trace - |table trace workspaceOid]
