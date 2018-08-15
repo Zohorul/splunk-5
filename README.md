@@ -15,13 +15,13 @@ index="_internal"  log_level=*
 - | join featureId [search host="homework" state=* usr=* | rename state AS state_code | lookup geo_attr_us_states.csv state_code OUTPUT   -state_name AS featureId]
 - | stats count(usr) BY featureId
 - | geom geo_us_states featureIdField=featureId
-- Need to make the geographic match from the inputlookup table. In that, the states are called featureId, so need to rename my column that so it can join up. For the join, just specify the name of the column to join on and then do the table or create a subquery as above
+  - Need to make the geographic match from the inputlookup table. In that, the states are called featureId, so need to rename my column that so it can join up. For the join, just specify the name of the column to join on and then do the table or create a subquery as above
 
-  - geo_attr_countries File 
-  - geo_attr_us_states File 
-  - geo_countries geo
-  - geo_sf_neighborhoods geo
-  - geo_us_states geo 
+    - geo_attr_countries File 
+    - geo_attr_us_states File 
+    - geo_countries geo
+    - geo_sf_neighborhoods geo
+    - geo_us_states geo 
 
 ### Search Substring
 - Search a substring in an evalution field
@@ -42,4 +42,8 @@ index="_internal"  log_level=*
 
 
 ### Null
-- isnull(xxx_field), then...
+- isnull(xxx_field), then.. [NOT isnull()]
+
+
+### Shorten tables
+- head 10  no parentheses
