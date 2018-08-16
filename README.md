@@ -59,3 +59,6 @@ index="_internal"  log_level=*
 ### Good source for map backgrounds (tiles)
 - https://wiki.openstreetmap.org/wiki/Tile_servers
 
+### Rangemap to bucket numbers into groups. Output is "range" variable
+- | rangemap field=[numberfield] low=0-5 elevated=5-100 default=severe
+
