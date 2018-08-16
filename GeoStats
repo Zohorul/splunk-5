@@ -1,0 +1,11 @@
+sourcetype="dapper-spans" subId=* requestSpan.stack= *
+componentType="PageNavigationMetrics" 
+cleanedEventDescription="visited*"
+NOT traceSummary.CRT=null
+| rename traceSummary.errors as errors
+| rename traceSummary.CRT as csrt 
+| rename requestSpan.stack as stack
+| eval JSerror = case(errors>0,1,true(),0)
+| eval apdex = case(errors>0,0.0,csrt<2000,1.0,csrt<8000,0.5,true(),0.0)
+| iplocation realRemoteHost
+| geostats avg(apdex) latfield=lat longfield=lon
