@@ -1,0 +1,48 @@
+sourcetype="dapper-spans" subId=2001 requestSpan.stack= prod
+componentType="pageNavigationMetrics"
+NOT traceSummary.CRT=null
+| rex mode=sed field=cleanedPageHash "s/detail.*/detail/g"
+| rex mode=sed field=cleanedPageHash "s/workviews.*/workviews/g"
+| rex mode=sed field=cleanedPageHash "s/_[0-9]{1}$//g"
+| rex mode=sed field=cleanedPageHash "s/:[a-z0-9A-Z_]*$//g"
+| rex mode=sed field=cleanedPageHash "s/\/$//g"
+| rex mode=sed field=cleanedPageHash "s/\/.*error.*/\/error/g"
+| eval pageType=case(
+    cleanedPageHash="/backlog","deprecated",
+    cleanedPageHash="/defects","deprecated",
+    cleanedPageHash="/detail","deprecated",
+    cleanedPageHash="/releasemetrics","deprecated",
+    cleanedPageHash="/releasestatus","deprecated",
+    cleanedPageHash="/tasks","deprecated",
+    cleanedPageHash="/teamstatus","deprecated",
+    cleanedPageHash="/testcases","deprecated",
+    cleanedPageHash="/testfolders","deprecated",
+    cleanedPageHash="/userstories","deprecated",
+    
+    cleanedPageHash="/capacityplanning","core",
+    cleanedPageHash="/custom","core",
+    cleanedPageHash="/dashboard","core",
+    cleanedPageHash="/iterationstatus","core",
+    cleanedPageHash="/portfolioitemstreegrid","core",
+    cleanedPageHash="/releasetracking","core",
+    cleanedPageHash="/search","core",
+    cleanedPageHash="/teamplan","core",
+    cleanedPageHash="/timeboxes","core",
+    
+    cleanedPageHash="/planprogression","new",
+    cleanedPageHash="/teamboard","new",    
+    cleanedPageHash="/workviews","new",
+    
+    cleanedPageHash="/error","error",
+    
+    true(),"other"
+)
+| rename requestSpan.traceId AS trace 
+| join trace type="inner" [search sourcetype="alm-spans" workspaceOid = * subscriptionId=2001 | rename requestSpan.traceId AS trace | dedup trace |table trace workspaceOid]
+| rename traceSummary.errors as errors
+| rename traceSummary.CRT as csrt 
+| rename requestSpan.stack as stack
+| eval apdex = case(errors>0,0.0,csrt<2000,1.0,csrt<8000,0.5,true(),0.0)
+| stats c(trace) as loads avg(apdex) as apdex_avg  by workspaceOid cleanedPageHash pageType
+| where loads > 10
+| sort -apdex_avg
