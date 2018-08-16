@@ -1,5 +1,4 @@
-sourcetype="dapper-spans" requestSpan.stack=*
-subId=2001
+sourcetype="dapper-spans" subId=$mySubId$ requestSpan.stack= *
 componentType="PageNavigationMetrics" 
 cleanedEventDescription="visited*"
 NOT traceSummary.CRT=null
@@ -9,10 +8,9 @@ NOT traceSummary.CRT=null
 | eval JSerror = case(errors>0,1,true(),0)
 | eval apdex = case(errors>0,0.0,csrt<2000,1.0,csrt<8000,0.5,true(),0.0)
 | iplocation realRemoteHost
-| eval NoNullCity = case(City="","Unknown",true(),City)
 | eval NoNullRegion = case(Region="","Unknown",true(),Region)
-| eval NoNullCountry = case(Country="","Unknown",true(),Country)
-| stats count as loads, dc(userId) as users, sum(JSerror) as JSerrors, avg(apdex) as apdex, perc25(csrt) as p25, perc50(csrt)   as p50, perc75(csrt) as p75, perc90(csrt) as p90 by City, Region, Country
-| search users>10 loads>100
-| stats avg(apdex) by Region
+| eval apdex = apdex*(100)
+| stats avg(apdex) as apdex_avg by Region
+| eval apdex_avg = ceiling(apdex_avg)
+| table Region apdex_avg
 | geom geo_us_states featureIdField=Region
