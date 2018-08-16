@@ -51,3 +51,6 @@ index="_internal"  log_level=*
 ### Join tables
 - | rename requestSpan.traceId AS trace 
 - | join trace type="inner" [search sourcetype="alm-spans" workspaceOid = *| rename requestSpan.traceId AS trace | dedup trace - |table trace workspaceOid]
+
+### Indexes and Sourcetype list
+- |metasearch index=* sourcetype=* | stats count by index, sourcetype | fields - count
