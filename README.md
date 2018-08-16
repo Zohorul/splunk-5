@@ -54,3 +54,8 @@ index="_internal"  log_level=*
 
 ### Indexes and Sourcetype list
 - |metasearch index=* sourcetype=* | stats count by index, sourcetype | fields - count
+
+
+### Good source for map backgrounds (tiles)
+- https://wiki.openstreetmap.org/wiki/Tile_servers
+
