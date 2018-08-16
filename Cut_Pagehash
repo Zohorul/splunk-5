@@ -1,0 +1,6 @@
+| rex mode=sed field=cleanedPageHash "s/detail.*/detail/g"
+| rex mode=sed field=cleanedPageHash "s/workviews.*/workviews/g"
+| rex mode=sed field=cleanedPageHash "s/_[0-9]{1}$//g"
+| rex mode=sed field=cleanedPageHash "s/:[a-z0-9A-Z_]*$//g"
+| rex mode=sed field=cleanedPageHash "s/\/$//g"
+| rex mode=sed field=cleanedPageHash "s/\/.*error.*/\/error/g"
