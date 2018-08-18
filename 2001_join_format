@@ -1,1 +1,0 @@
-| join userId type="inner" [inputlookup cisco_user_to_workspace.csv]
