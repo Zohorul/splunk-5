@@ -1,35 +1,16 @@
 sourcetype="dapper-spans" requestSpan.stack = "prod" cleanedPageHash=* subId=* eventType=* cleanedEventDescription=* traceSummary.CRT!="null"
-|rename requestSpan.traceId AS trace cleanedPageHash AS page cleanedEventDescription AS eventDesc
+|rename requestSpan.traceId AS trace cleanedEventDescription AS eventDesc
 | rename traceSummary.errors as errors
 | rename traceSummary.CRT as csrt 
 | rename requestSpan.stack as stack
 | rename userId as userOid
-| eval pageType=case(
-    cleanedPageHash="/backlog","deprecated",
-    cleanedPageHash="/defects","deprecated",
-    cleanedPageHash="/detail","deprecated",
-    cleanedPageHash="/releasemetrics","deprecated",
-    cleanedPageHash="/releasestatus","deprecated",
-    cleanedPageHash="/tasks","deprecated",
-    cleanedPageHash="/teamstatus","deprecated",
-    cleanedPageHash="/testcases","deprecated",
-    cleanedPageHash="/testfolders","deprecated",
-    cleanedPageHash="/userstories","deprecated",
-    cleanedPageHash="/capacityplanning","core",
-    cleanedPageHash="/custom","core",
-    cleanedPageHash="/dashboard","core",
-    cleanedPageHash="/iterationstatus","core",
-    cleanedPageHash="/portfolioitemstreegrid","core",
-    cleanedPageHash="/releasetracking","core",
-    cleanedPageHash="/search","core",
-    cleanedPageHash="/teamplan","core",
-    cleanedPageHash="/timeboxes","core",
-    cleanedPageHash="/planprogression","new",
-    cleanedPageHash="/teamboard","new",    
-    cleanedPageHash="/workviews","new",
-    cleanedPageHash="/error","error",
-    true(),"other")
+| rex mode=sed field=cleanedPageHash "s/detail.*/detail/g"
+| rex mode=sed field=cleanedPageHash "s/workviews.*/workviews/g"
+| rex mode=sed field=cleanedPageHash "s/_[0-9]{1}$//g"
+| rex mode=sed field=cleanedPageHash "s/:[a-z0-9A-Z_]*$//g"
+| rex mode=sed field=cleanedPageHash "s/\/$//g"
+| rex mode=sed field=cleanedPageHash "s/\/.*error.*/\/error/g"
 | eval apdex = case(errors>0,0.0,csrt<2000,1.0,csrt<8000,0.5,true(),0.0)
 | join userOid type="inner" [inputlookup userOidToWorkspaceOid.csv]
-| stats dc(trace) AS loads avg(apdex) AS apdex_avg BY subId eventType pageType eventDesc workspaceOid
+| stats dc(trace) AS loads avg(apdex) AS apdex_avg BY subId eventType cleanedPageHash eventDesc workspaceOid
 | search loads>100
