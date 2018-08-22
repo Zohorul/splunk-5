@@ -1,0 +1,9 @@
+sourcetype = "beacon-spans" PortfolioItem 
+| where like(url, "%slm/webservice/v2.x/portfolioitem%") 
+| eval url_split=split(url,"/") 
+| eval port=mvindex(url_split,4) 
+| eval port_pg=mvindex(url_split,5) 
+| eval custom_bin = case(port_pg IN ("feature", "initiative","strategy", "theme"), 0, true(), 1) 
+| table subId url_split port port_pg custom_bin 
+| dedup subId sortby -custom_bin 
+| where custom_bin =1
