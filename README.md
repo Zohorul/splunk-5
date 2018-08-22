@@ -1,14 +1,17 @@
 ## Splunk
 Notes and useful queries
 
+
 ### Changing times – variable = expression
 - timestamp=strftime(_time,"%d %B, %I:%M %p")
+
 
 ### Lookup
 index="_internal"  log_level=* 
 - | lookup test.csv log_level OUTPUT colname2
 - | table log_level colname2
 - For the lookup it is <lookup table> <field to match can be renamed to match> OUTPUT <what you want to take from the lookup table>
+
 
 ### Create Map
 - | inputlookup geo_us_states
@@ -23,6 +26,7 @@ index="_internal"  log_level=*
     - geo_sf_neighborhoods geo
     - geo_us_states geo 
 
+
 ### Search Substring
 - Search a substring in an evalution field
   - | eval flag =if(like(eventDescription, "%clicked%"),1,0)
@@ -30,17 +34,18 @@ index="_internal"  log_level=*
 - Filter a search based on substring  
   - | where like(eventDescription, "%clicked%")
 
+
 ### Use lists like SQL in
 - Search command supports IN operator
   - sourcetype=xyz status IN (100, 102, 103)
-  
-### Split text fields
-- split(field, "/,. etc.")
-  
-  
-
+    
 - Eval and where commands support in function
   - | where in(status,"222","333","444","555")
+  
+
+### Split text fields
+- split(field, "/,. etc.")
+
 
 ### Nice summary
 - sourcetype="alm-spans" | head 1000 | fieldSummary
@@ -53,9 +58,11 @@ index="_internal"  log_level=*
 ### Shorten tables
 - head 10  no parentheses
 
+
 ### Join tables
 - | rename requestSpan.traceId AS trace 
 - | join trace type="inner" [search sourcetype="alm-spans" workspaceOid = *| rename requestSpan.traceId AS trace | dedup trace - |table trace workspaceOid]
+
 
 ### Indexes and Sourcetype list
 - |metasearch index=* sourcetype=* | stats count by index, sourcetype | fields - count
@@ -63,6 +70,7 @@ index="_internal"  log_level=*
 
 ### Good source for map backgrounds (tiles)
 - https://wiki.openstreetmap.org/wiki/Tile_servers
+
 
 ### Rangemap to bucket numbers into groups. Output is "range" variable
 - | rangemap field=[numberfield] low=0-5 elevated=5-100 default=severe
