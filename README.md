@@ -35,12 +35,14 @@ index="_internal"  log_level=*
   - | where like(eventDescription, "%clicked%")
 
 
-### Use lists like SQL in
+### Use lists like SQL 'IN' clause
 - Search command supports IN operator
   - sourcetype=xyz status IN (100, 102, 103)
     
 - Eval and where commands support in function
   - | where in(status,"222","333","444","555")
+  
+- To get a subsearch to work here, inner join to the subquery vs. using where since returning a table as list does not work  
   
 
 ### Split text fields
